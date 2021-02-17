@@ -52,6 +52,8 @@
                          select-columns
                          drop-columns
                          rename-columns
+                         add-or-replace-column
+                         add-or-replace-columns
                          add-column
                          add-columns
                          map-columns
@@ -59,10 +61,6 @@
                          reorder-columns
                          convert-types
                          ->array)
-
-(def ^{:deprecated "Use `add-column` instead."} add-or-replace-column add-column)
-
-(def ^{:deprecated "Use `add-columns` instead."} add-or-replace-columns add-columns)
 
 (exporter/export-symbols tablecloth.api.rows
                          select-rows
