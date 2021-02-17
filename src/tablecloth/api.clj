@@ -1,8 +1,6 @@
 (ns tablecloth.api
   (:refer-clojure :exclude [group-by drop concat rand-nth first last shuffle])  
-  (:require [tech.v3.datatype.export-symbols :as exporter]
-            [tech.v3.tensor :as tensor]
-            [tech.v3.dataset.tensor :as ds-tensor]))
+  (:require [tech.v3.datatype.export-symbols :as exporter]))
 
 (exporter/export-symbols tech.v3.datatype
                          clone)
@@ -52,8 +50,6 @@
                          select-columns
                          drop-columns
                          rename-columns
-                         add-or-replace-column
-                         add-or-replace-columns
                          add-column
                          add-columns
                          map-columns
@@ -61,6 +57,10 @@
                          reorder-columns
                          convert-types
                          ->array)
+
+(def ^{:deprecated "Use `add-column` instead."} add-or-replace-column add-column)
+
+(def ^{:deprecated "Use `add-columns` instead."} add-or-replace-columns add-columns)
 
 (exporter/export-symbols tablecloth.api.rows
                          select-rows
@@ -142,4 +142,14 @@
 (def ^{:doc (select-or-drop-docstring "Drop")
        :arglists '([ds columns-selector rows-selector])}
   drop (partial select-or-drop drop-columns drop-rows))
+
+;; tibble macro
+
+(defmacro let-dataset
+  ([bindings] `(let-dataset ~bindings nil))
+  ([bindings options]
+   (let [cols (take-nth 2 bindings)
+         col-defs (mapv vector (map keyword cols) cols)]
+     `(let [~@bindings]
+        (dataset ~col-defs ~options)))))
 
